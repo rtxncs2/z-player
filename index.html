@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z PLAYER</title>
+
+<style>
+:root {
+  --bg: #0e0e0e;
+  --fg: #ffffff;
+  --accent: #1db954;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+.player {
+  width: 360px;
+  aspect-ratio: 9 / 16;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 20px;
+}
+
+.track-info {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.track-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.track-artist {
+  font-size: 14px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  fill: var(--fg);
+  width: 64px;
+  height: 64px;
+}
+
+button:hover {
+  fill: var(--accent);
+}
+
+.seek {
+  width: 100%;
+}
+
+input[type="range"] {
+  width: 100%;
+  appearance: none;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="player">
+  <div class="track-info">
+    <div class="track-title">Iruvazhiye</div>
+    <div class="track-artist">Operation Java</div>
+  </div>
+
+  <div>
+    <div class="seek">
+      <input type="range" id="seekbar" value="0">
+      <div class="time">
+        <span id="current">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="play">
+        <!-- Play SVG -->
+        <svg id="playIcon" viewBox="0 0 24 24">
+          <polygon points="5,3 19,12 5,21"></polygon>
+        </svg>
+
+        <!-- Pause SVG -->
+        <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none">
+          <rect x="5" y="3" width="5" height="18"></rect>
+          <rect x="14" y="3" width="5" height="18"></rect>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<audio id="audio" src="song.mp3"></audio>
+
+<script>
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("play");
+const playIcon = document.getElementById("playIcon");
+const pauseIcon = document.getElementById("pauseIcon");
+const seekbar = document.getElementById("seekbar");
+const current = document.getElementById("current");
+const duration = document.getElementById("duration");
+
+function format(t) {
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+playBtn.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+    playIcon.style.display = "none";
+    pauseIcon.style.display = "block";
+  } else {
+    audio.pause();
+    playIcon.style.display = "block";
+    pauseIcon.style.display = "none";
+  }
+};
+
+audio.onloadedmetadata = () => {
+  seekbar.max = audio.duration;
+  duration.textContent = format(audio.duration);
+};
+
+audio.ontimeupdate = () => {
+  seekbar.value = audio.currentTime;
+  current.textContent = format(audio.currentTime);
+};
+
+seekbar.oninput = () => {
+  audio.currentTime = seekbar.value;
+};
+</script>
+
+</body>
+</html>
