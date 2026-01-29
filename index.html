@@ -3,116 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Z PLAYER</title>
-
+<title>Z Player</title>
 <style>
-:root {
-  --bg: #0e0e0e;
-  --fg: #ffffff;
-  --accent: #1db954;
-}
+  :root {
+    --bg: #000000;
+    --fg: #ffffff;
+  }
 
-* {
-  box-sizing: border-box;
-  font-family: system-ui, sans-serif;
-}
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    font-family: system-ui, sans-serif;
+    color: var(--fg);
+  }
 
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #000;
-}
+  .player {
+    width: 320px;
+    height: 580px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 20px;
+  }
 
-.player {
-  width: 360px;
-  aspect-ratio: 9 / 16;
-  background: var(--bg);
-  color: var(--fg);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-radius: 20px;
-}
+  .track-info {
+    text-align: center;
+  }
 
-.track-info {
-  text-align: center;
-  margin-top: 40px;
-}
+  .track-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
 
-.track-title {
-  font-size: 18px;
-  font-weight: 600;
-}
+  .track-artist {
+    font-size: 13px;
+    opacity: 0.4;
+    margin-top: 4px;
+  }
 
-.track-artist {
-  font-size: 14px;
-  opacity: 0.6;
-  margin-top: 4px;
-}
+  .record-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .record {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, #fff 0%, #fff 30%, #000 30.5%, #000 100%);
+    border-radius: 50%;
+    position: relative;
+    border: 1px solid #222;
+    animation: rotate 4s linear infinite;
+    animation-play-state: paused;
+    overflow: hidden;
+  }
 
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  fill: var(--fg);
-  width: 64px;
-  height: 64px;
-}
+  .record::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(
+      transparent, 
+      rgba(255,255,255,0.1) 10%, 
+      transparent 20%, 
+      transparent 50%, 
+      rgba(255,255,255,0.1) 60%, 
+      transparent 70%
+    );
+  }
 
-button:hover {
-  fill: var(--accent);
-}
+  .record::after {
+    content: '';
+    position: absolute;
+    top: 45%; left: 45%;
+    width: 6px; height: 6px;
+    background: #000;
+    border-radius: 50%;
+  }
 
-.seek {
-  width: 100%;
-}
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 
-input[type="range"] {
-  width: 100%;
-  appearance: none;
-  height: 4px;
-  background: #333;
-  border-radius: 2px;
-}
+  .seek {
+    margin-bottom: 40px;
+  }
 
-input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: var(--accent);
-  border-radius: 50%;
-  cursor: pointer;
-}
+  input[type="range"] {
+    width: 100%;
+    appearance: none;
+    height: 2px;
+    background: #222;
+    outline: none;
+  }
 
-.time {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  opacity: 0.6;
-  margin-top: 6px;
-}
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px; height: 10px;
+    background: var(--fg);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    opacity: 0.3;
+    margin-top: 8px;
+  }
+
+  .btns {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* BIGGER PLAY BUTTON */
+  #play {
+    background: none;
+    border: 1px solid #333;
+    width: 84px; /* Increased from 64px */
+    height: 84px; /* Increased from 64px */
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  #play:hover {
+    border-color: #fff;
+    transform: scale(1.05);
+  }
+
+  #play svg {
+    fill: #fff;
+    width: 32px; /* Increased from 20px to match button size */
+    height: 32px;
+  }
 </style>
 </head>
-
 <body>
 
 <div class="player">
   <div class="track-info">
-    <div class="track-title">Papaoutai(Afro Soul)</div>
+    <div class="track-title">Papaoutai (Afro Soul)</div>
     <div class="track-artist">Stromae, Mikeeysmind</div>
   </div>
 
-  <div>
+  <div class="record-container">
+    <div id="record" class="record"></div>
+  </div>
+
+  <div class="controls-section">
     <div class="seek">
       <input type="range" id="seekbar" value="0">
       <div class="time">
@@ -121,17 +173,10 @@ input[type="range"]::-webkit-slider-thumb {
       </div>
     </div>
 
-    <div class="controls">
+    <div class="btns">
       <button id="play">
-        <!-- Play SVG -->
-        <svg id="playIcon" viewBox="0 0 24 24">
-          <polygon points="5,3 19,12 5,21"></polygon>
-        </svg>
-
-        <!-- Pause SVG -->
-        <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none">
-          <rect x="5" y="3" width="5" height="18"></rect>
-          <rect x="14" y="3" width="5" height="18"></rect>
+        <svg id="icon" viewBox="0 0 24 24">
+          <path id="path" d="M8 5v14l11-7z"></path>
         </svg>
       </button>
     </div>
@@ -141,46 +186,47 @@ input[type="range"]::-webkit-slider-thumb {
 <audio id="audio" src="song.mp3"></audio>
 
 <script>
-const audio = document.getElementById("audio");
-const playBtn = document.getElementById("play");
-const playIcon = document.getElementById("playIcon");
-const pauseIcon = document.getElementById("pauseIcon");
-const seekbar = document.getElementById("seekbar");
-const current = document.getElementById("current");
-const duration = document.getElementById("duration");
+  const audio = document.getElementById("audio");
+  const playBtn = document.getElementById("play");
+  const record = document.getElementById("record");
+  const path = document.getElementById("path");
+  const seekbar = document.getElementById("seekbar");
+  const current = document.getElementById("current");
+  const duration = document.getElementById("duration");
 
-function format(t) {
-  const m = Math.floor(t / 60);
-  const s = Math.floor(t % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
-}
+  const playD = "M8 5v14l11-7z";
+  const pauseD = "M6 19h4V5H6v14zm8-14v14h4V5h-4z";
 
-playBtn.onclick = () => {
-  if (audio.paused) {
-    audio.play();
-    playIcon.style.display = "none";
-    pauseIcon.style.display = "block";
-  } else {
-    audio.pause();
-    playIcon.style.display = "block";
-    pauseIcon.style.display = "none";
+  function format(t) {
+    if (isNaN(t)) return "0:00";
+    const m = Math.floor(t / 60);
+    const s = Math.floor(t % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   }
-};
 
-audio.onloadedmetadata = () => {
-  seekbar.max = audio.duration;
-  duration.textContent = format(audio.duration);
-};
+  playBtn.onclick = () => {
+    if (audio.paused) {
+      audio.play().catch(() => {});
+      path.setAttribute("d", pauseD);
+      record.style.animationPlayState = "running";
+    } else {
+      audio.pause();
+      path.setAttribute("d", playD);
+      record.style.animationPlayState = "paused";
+    }
+  };
 
-audio.ontimeupdate = () => {
-  seekbar.value = audio.currentTime;
-  current.textContent = format(audio.currentTime);
-};
+  audio.onloadedmetadata = () => {
+    seekbar.max = audio.duration;
+    duration.textContent = format(audio.duration);
+  };
 
-seekbar.oninput = () => {
-  audio.currentTime = seekbar.value;
-};
+  audio.ontimeupdate = () => {
+    seekbar.value = audio.currentTime;
+    current.textContent = format(audio.currentTime);
+  };
+
+  seekbar.oninput = () => { audio.currentTime = seekbar.value; };
 </script>
-
 </body>
 </html>
